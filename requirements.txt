@@ -1,1 +1,3 @@
-willie
+argparse==1.2.1
+willie==4.5.1
+wsgiref==0.1.2
