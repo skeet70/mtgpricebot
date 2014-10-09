@@ -10,7 +10,7 @@ def price(bot, trigger):
         options = trigger.group(2).split(' !')
         data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': options[0]})))
         error = ""
-        if len(data) > 0 and "errors" not in data[0]:
+        if len(data) > 0:
             data = data[0]
             name = data['name']
             editions = data['editions']
@@ -34,11 +34,6 @@ def price(bot, trigger):
                 bot.reply(name + ' | Avg. price: ' + med_dollars + ' | Set: ' + set_id)
             else:
                 bot.reply(name + ' | Avg. price: ' + med_dollars + ' | Set: ' + set_id + ' | ' + error)
-        else if "errors" in data[0]:
-            data = data[0]
-            error += data['errors']
-            print(error)
-            bot.reply("No results, API error.")
         else:
             bot.reply("No results.")
     except Exception as e:
