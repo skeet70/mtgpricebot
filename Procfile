@@ -1,1 +1,1 @@
-bot: willie
+bot: willie -c /app/default.cfg
