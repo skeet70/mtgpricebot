@@ -8,6 +8,7 @@ import urllib
 def price(bot, trigger):
     try:
         options = trigger.group(2).split(' !')
+        options = [x.encode('utf-8') for x in options]
         data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': options[0]})))
         error = ""
         if len(data) > 0:
