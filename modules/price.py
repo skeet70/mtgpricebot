@@ -2,6 +2,7 @@ import willie
 import json
 import urllib2
 import urllib
+from bs4 import BeautifulSoup
 
 
 @willie.module.commands('price')
@@ -37,6 +38,27 @@ def price(bot, trigger):
                 bot.reply(name + ' | Avg. price: ' + med_dollars + ' | Set: ' + set_id + ' | ' + error)
         else:
             bot.reply("No results.")
+    except Exception as e:
+        print(e)
+        bot.reply("No results (or you broke me).")
+
+
+@willie.module.commands('define')
+def define(bot, trigger):
+    try:
+        option = trigger.group(2)
+        option = '#' + option.encode('utf-8')
+        data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
+        soup = BeautifulSoup(data)
+        definitions = soup.find(option).parent.stripped_strings
+        if len(definitions) < 10:
+            for string in definitions.stripped_strings:
+                bot.reply(string)
+        elif len(definitions) == 0:
+            bot.reply("No results.")
+        else:
+            bot.reply("Too many results, or I'm broken.")
+
     except Exception as e:
         print(e)
         bot.reply("No results (or you broke me).")
