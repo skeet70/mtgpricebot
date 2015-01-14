@@ -48,7 +48,6 @@ def define(bot, trigger):
     try:
         option = trigger.group(2)
         option = option.encode('utf-8')
-        bot.reply(option)
         data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
         soup = BeautifulSoup(data)
         anchor_tag = soup.find('a', id=option)
