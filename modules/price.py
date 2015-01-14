@@ -54,7 +54,8 @@ def define(bot, trigger):
         anchor_tag = soup.find('a', id=option)
         reply = anchor_tag.string
         for sibling in anchor_tag.next_siblings:
-            reply = reply + ' ' + sibling.string
+            if sibling:
+                reply = reply + ' ' + sibling.string
         bot.reply(reply)
 
     except Exception as e:
