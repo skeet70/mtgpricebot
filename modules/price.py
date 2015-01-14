@@ -52,11 +52,9 @@ def define(bot, trigger):
         data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
         soup = BeautifulSoup(data)
         anchor_tag = soup.find('a', id=option)
-        parent = anchor_tag.parent
-        strings = parent.stripped_strings
-        reply = ''
-        for string in strings:
-            reply = reply + ' ' + string
+        reply = anchor_tag.string
+        for sibling in anchor_tag.next_siblings:
+            reply = reply + ' ' + sibling.string
         bot.reply(reply)
 
     except Exception as e:
