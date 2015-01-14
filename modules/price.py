@@ -89,7 +89,10 @@ def formats(bot, trigger):
                 if legality == "restricted":
                     output = output + "legal in " + key.capitalize() + ", "
             out_sections = output.rsplit(",", 1)[0].rsplit(",", 1)
-            output = out_sections[0] + ", and" + out_sections[1] + "."
+            if len(out_sections) == 1:
+                output = out_sections[0] + "."
+            else:
+                output = out_sections[0] + ", and" + out_sections[1] + "."
             bot.reply(output)
         else:
             bot.reply("No results.")
