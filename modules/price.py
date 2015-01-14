@@ -47,10 +47,10 @@ def price(bot, trigger):
 def define(bot, trigger):
     try:
         option = trigger.group(2)
-        option = '#' + option.encode('utf-8')
+        option = option.encode('utf-8')
         data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
         soup = BeautifulSoup(data)
-        definitions = soup.find(option).parent.stripped_strings
+        definitions = soup.find('a', id=option).parent.stripped_strings
         if len(definitions) < 10:
             for string in definitions.stripped_strings:
                 bot.reply(string)
