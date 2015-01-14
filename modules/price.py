@@ -50,10 +50,11 @@ def define(bot, trigger):
         option = option.encode('utf-8')
         data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
         soup = BeautifulSoup(data)
-        definitions = soup.find('a', id=option).parent.stripped_strings
+        definitions = soup.find('a', id=option).stripped_strings
+        reply = ''
         for string in definitions:
-            bot.reply(string)
-        bot.reply("That's all I've got.")
+            reply = reply + ' ' + string
+        bot.reply(reply)
 
     except Exception as e:
         print(e)
