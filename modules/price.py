@@ -51,7 +51,7 @@ def define(bot, trigger):
         data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
         soup = BeautifulSoup(data)
         definitions = soup.find('a', id=option).parent.stripped_strings
-        for string in definitions.stripped_strings:
+        for string in definitions:
             bot.reply(string)
         bot.reply("That's all I've got.")
 
