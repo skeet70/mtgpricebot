@@ -51,13 +51,9 @@ def define(bot, trigger):
         data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
         soup = BeautifulSoup(data)
         definitions = soup.find('a', id=option).parent.stripped_strings
-        if len(definitions) < 10:
-            for string in definitions.stripped_strings:
-                bot.reply(string)
-        elif len(definitions) == 0:
-            bot.reply("No results.")
-        else:
-            bot.reply("Too many results, or I'm broken.")
+        for string in definitions.stripped_strings:
+            bot.reply(string)
+        bot.reply("That's all I've got.")
 
     except Exception as e:
         print(e)
