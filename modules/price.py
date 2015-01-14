@@ -50,9 +50,11 @@ def define(bot, trigger):
         option = option.encode('utf-8')
         data = urllib2.urlopen('http://www.yawgatog.com/resources/magic-rules/')
         soup = BeautifulSoup(data)
-        definitions = soup.find('a', id=option).stripped_strings
+        anchor_tag = soup.find('a', id=option)
+        parent = anchor_tag.parent
+        strings = parent.stripped_strings
         reply = ''
-        for string in definitions:
+        for string in strings:
             reply = reply + ' ' + string
         bot.reply(reply)
 
