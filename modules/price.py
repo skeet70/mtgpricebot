@@ -7,6 +7,10 @@ from bs4 import BeautifulSoup
 
 @willie.module.commands('price')
 def price(bot, trigger):
+    """
+    Grab the price for the given card (and optional set). Information can come
+    from any API that outputs JSON.
+    """
     try:
         options = trigger.group(2).split(' !')
         options = [x.encode('utf-8') for x in options]
@@ -45,6 +49,11 @@ def price(bot, trigger):
 
 @willie.module.commands('define')
 def define(bot, trigger):
+    """
+    Get the definition for the given keyword or rule. The given keyword needs
+    to be an id on yawgatog.com for this to work correctly. Right now it's
+    scraping in the future it should hit an API.
+    """
     try:
         option = trigger.group(2)
         option = option.encode('utf-8')
@@ -57,6 +66,33 @@ def define(bot, trigger):
                 reply = reply + ' ' + sibling.string
         bot.reply(reply)
 
+    except Exception as e:
+        print(e)
+        bot.reply("No results (or you broke me).")
+
+
+@willie.module.commands('formats')
+def formats(bot, trigger):
+    try:
+        option = trigger.group(2)
+        option = option.encode('utf-8')
+        data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': option})))
+        if len(data) > 0:
+            data = data[0]
+            name = data['name']
+            formats = data['formats']
+            output = name + " is "
+            for key in formats:
+                legality = formats[key]
+                if legality == "legal":
+                    output + "legal in " + key.capitalize() + ", "
+                if legality == "restricted":
+                    output + "legal in " + key.capitalize() + ", "
+            out_sections = output.rsplit(",", 1)[0].rsplit(",", 1)
+            output = out_sections[0] + ", and" + out_sections[1] + "."
+            bot.reply(output)
+        else:
+            bot.reply("No results.")
     except Exception as e:
         print(e)
         bot.reply("No results (or you broke me).")
