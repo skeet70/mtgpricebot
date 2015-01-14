@@ -85,9 +85,9 @@ def formats(bot, trigger):
             for key in formats:
                 legality = formats[key]
                 if legality == "legal":
-                    output + "legal in " + key.capitalize() + ", "
+                    output = output + "legal in " + key.capitalize() + ", "
                 if legality == "restricted":
-                    output + "legal in " + key.capitalize() + ", "
+                    output = output + "legal in " + key.capitalize() + ", "
             out_sections = output.rsplit(",", 1)[0].rsplit(",", 1)
             output = out_sections[0] + ", and" + out_sections[1] + "."
             bot.reply(output)
