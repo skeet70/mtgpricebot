@@ -94,15 +94,17 @@ def load_set(set):
             key=card['mtgpriceID'],
             value=card['fairPrice'],
             options={
-                'expires_in': 86400
+                "expires_in": "86400",
+                "add": "True"
             }
         )
     msg = cache.put(
         cache="mtgprice",
         key=set,
-        value=True,
+        value="True",
         options={
-            'expires_in': 86400
+            "expires_in": "86400",
+            "add": "True"
         }
     )
 
