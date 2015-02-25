@@ -183,7 +183,7 @@ def price(bot, trigger):
         card = None
         options = trigger.group(2).split(' !')
         options = [x.encode('utf-8') for x in options]
-        if options[0] & options[1]:
+        if len(options) == 2:
             name = construct_name(options[0])
             set = construct_set(options[1])
             card = get_card(name, set)
