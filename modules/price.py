@@ -84,10 +84,7 @@ def load_set(set):
     html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set)
     data = None
 
-    try:
-        data = json.load(html)
-    except:
-        return html
+    data = json.load(html)
 
     cards_list = data['cards']
     for card in cards_list:
@@ -140,10 +137,6 @@ def get_card(name, set):
     card = None
     msg = ""
 
-    print construct_id(name, set)
-    print set
-    print 'http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI'] + '&s=' + set
-
     try:
         card = cache.get(cache="mtgprice", key=construct_id(name, set))
     except:
@@ -153,8 +146,7 @@ def get_card(name, set):
             return None
         else:
             msg = load_set(set)
-            if msg != "Stored.":
-                raise Exception(msg.read())
+            print msg.read()
             card = get_card(name, set)
 
     return card
