@@ -150,7 +150,7 @@ def get_card(name, set):
         else:
             msg = load_set(set)
             if msg != "Stored.":
-                raise Exception(msg)
+                raise Exception(msg.read())
             card = get_card(name, set)
 
     return card
