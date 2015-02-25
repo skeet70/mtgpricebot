@@ -142,6 +142,7 @@ def get_card(name, set):
 
     print construct_id(name, set)
     print set
+    print 'http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI'] + '&s=' + set
 
     try:
         card = cache.get(cache="mtgprice", key=construct_id(name, set))
