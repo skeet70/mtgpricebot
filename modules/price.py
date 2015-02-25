@@ -125,6 +125,10 @@ def get_card(name, set):
 
 
 def get_deckbrew(input_name, input_set=None):
+    """
+    To be used when the cache and mtgprice have failed. This should let us do
+    some fuzzy name only matches.
+    """
     data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})))
     card = None
 
@@ -137,9 +141,9 @@ def get_deckbrew(input_name, input_set=None):
             for item in editions:
                 if item['set'].lower() == input_set.lower():
                     card = get_card(construct_name(fuzzy_name, construct_set(input_set))
-                        return (card, fuzzy_name, item['set'])
+                        return card, fuzzy_name, item['set']
 
-        return (get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])), fuzzy_name, editions[0]['set'])
+        return get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])), fuzzy_name, editions[0]['set']
 
 
 @willie.module.commands('price')
