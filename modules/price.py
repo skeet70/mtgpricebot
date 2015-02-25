@@ -49,11 +49,18 @@ from bs4 import BeautifulSoup
 #     except Exception as e:
 #         print(e)
 #         bot.reply("No results (or you broke me).")
+
 def construct_name(name_input):
+    """
+    Construct a spaceless name for use with MTGPrice's API.
+    """
     return name_input.title().replace(' ', '_')
 
 
 def construct_set(set_input):
+    """
+    Construct a spaceless set name for use with MTGPrice's API.
+    """
     return set_input.title().replace(' ', '_')
 
 
@@ -68,6 +75,10 @@ def construct_id(name, set):
 
 
 def load_set(set):
+    """
+    Loads a set into the cache, only fired if the set_marker isn't already
+    there. All cache items expire after a day.
+    """
     cache = IronCache()
 
     data = json.load(urllib2.urlopen(
@@ -229,6 +240,9 @@ def define(bot, trigger):
 
 @willie.module.commands('formats')
 def formats(bot, trigger):
+    """
+    Respond to the user with the format information for a given card.
+    """
     try:
         option = trigger.group(2)
         option = option.encode('utf-8')
