@@ -140,6 +140,9 @@ def get_card(name, set):
     card = None
     msg = ""
 
+    print construct_id(name, set)
+    print set
+
     try:
         card = cache.get(cache="mtgprice", key=construct_id(name, set))
     except:
@@ -222,7 +225,7 @@ def price(bot, trigger):
             bot.reply("No results.")
 
     except Exception as e:
-        bot.msg("skeet70", e.args[0])
+        print(e.args[0])
         bot.reply("No results (or you broke me).")
 
 
