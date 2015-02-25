@@ -1,8 +1,145 @@
-import willie
 import json
 import urllib2
 import urllib
+import os
+
+import willie
+from iron_cache import *
 from bs4 import BeautifulSoup
+
+
+## THIS IS THE OLD API.DECKBREW METHOD
+# @willie.module.commands('price')
+# def price(bot, trigger):
+#     """
+#     Grab the price for the given card (and optional set). Information can come
+#     from any API that outputs JSON.
+#     """
+#     try:
+#         options = trigger.group(2).split(' !')
+#         options = [x.encode('utf-8') for x in options]
+#         data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': options[0]})))
+#         error = ""
+#         if len(data) > 0:
+#             data = data[0]
+#             name = data['name']
+#             editions = data['editions']
+#             set_id = ""
+#             prices = ""
+#             if len(options) == 2:
+#                 for item in editions:
+#                     if item['set_id'].lower() == options[1].lower():
+#                         set_id = item['set_id']
+#                         prices = item['price']
+#                 if set_id == "":
+#                     set_id = editions[0]['set_id']
+#                     prices = editions[0]['price']
+#                     error += "No printing: " + options[1].upper()
+#             else:
+#                 set_id = editions[0]['set_id']
+#                 prices = editions[0]['price']
+#             med = prices['median']
+#             med_dollars = '${:,.2f}'.format(float(med)/100)
+#             if error == "":
+#                 bot.reply(name + ' | Avg. price: ' + med_dollars + ' | Set: ' + set_id)
+#             else:
+#                 bot.reply(name + ' | Avg. price: ' + med_dollars + ' | Set: ' + set_id + ' | ' + error)
+#         else:
+#             bot.reply("No results.")
+#     except Exception as e:
+#         print(e)
+#         bot.reply("No results (or you broke me).")
+def construct_name(name_input):
+    return name_input.title().replace(' ', '_')
+
+
+def construct_set(set_input):
+    return set_input.title().replace(' ', '_')
+
+
+def construct_id(name, set):
+    """
+    Construct the MTGPrice API ID for use with the cache.
+    """
+    name = construct_name(name_input)
+    set = construct_set(set_input)
+
+    return name + set + "falseNM-M"
+
+
+def load_set(set):
+    cache = IronCache()
+
+    data = json.load(urllib2.urlopen(
+        'http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set))
+    cards_list = data['cards']
+    for card in cards:
+        cache.put(
+            cache="mtgprice",
+            key=card['mtgpriceID'],
+            value=card['fairPrice'],
+            expires_in=86400,
+            add=True
+        )
+    msg = cache.put(
+        cache="mtgprice",
+        key=set,
+        value=True,
+        expires_in=86400,
+        add=True
+    )
+
+    return msg.msg
+
+
+def set_exists(set):
+    cache = IronCache()
+
+    try:
+        set_marker = cache.get(cache="mtgprice", key=set)
+    except:
+        set_marker = None
+
+    if set_marker:
+        return True
+    else:
+        return False
+
+
+def get_card(name, set):
+    cache = IronCache()
+    card = None
+
+    try:
+        card = cache.get(cache="mtgprice", key=construct_id(name, set))
+    except:
+        card = None
+    if card = None:
+        if set_exists(set):
+            return None
+        else:
+            load_set(set)
+            card = get_card(name, set)
+
+    return card
+
+
+def get_deckbrew(input_name, input_set=None):
+    data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})))
+    card = None
+
+    if len(data > 0):
+        data = data[0]
+        fuzzy_name = data['name']
+        editions = data['editions']
+
+        if input_set:
+            for item in editions:
+                if item['set'].lower() == input_set.lower():
+                    card = get_card(construct_name(fuzzy_name, construct_set(input_set))
+                        return (card, fuzzy_name, item['set'])
+
+        return (get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])), fuzzy_name, editions[0]['set'])
 
 
 @willie.module.commands('price')
@@ -12,36 +149,35 @@ def price(bot, trigger):
     from any API that outputs JSON.
     """
     try:
+        card = None
         options = trigger.group(2).split(' !')
         options = [x.encode('utf-8') for x in options]
-        data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': options[0]})))
-        error = ""
-        if len(data) > 0:
-            data = data[0]
-            name = data['name']
-            editions = data['editions']
-            set_id = ""
-            prices = ""
-            if len(options) == 2:
-                for item in editions:
-                    if item['set_id'].lower() == options[1].lower():
-                        set_id = item['set_id']
-                        prices = item['price']
-                if set_id == "":
-                    set_id = editions[0]['set_id']
-                    prices = editions[0]['price']
-                    error += "No printing: " + options[1].upper()
+        if options[0] & options[1]:
+            name = construct_name(options[0])
+            set = construct_set(options[1])
+            card = get_card(name, set)
+            if card.value:
+                bot.reply(
+                    options[0].title() + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + options[1].title()
             else:
-                set_id = editions[0]['set_id']
-                prices = editions[0]['price']
-            med = prices['median']
-            med_dollars = '${:,.2f}'.format(float(med)/100)
-            if error == "":
-                bot.reply(name + ' | Avg. price: ' + med_dollars + ' | Set: ' + set_id)
+                card, fuzzy_name, fuzzy_set = get_deckbrew(options[0], options[1])
+                if card.value:
+                    bot.reply(
+                    fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set
+                else:
+                    bot.reply("No results.")
+
+        elif options[0]:
+            card, fuzzy_name, fuzzy_set = get_deckbrew(options[0])
+            if card.value:
+                bot.reply(
+                fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set
             else:
-                bot.reply(name + ' | Avg. price: ' + med_dollars + ' | Set: ' + set_id + ' | ' + error)
+                bot.reply("No results.")
+
         else:
             bot.reply("No results.")
+
     except Exception as e:
         print(e)
         bot.reply("No results (or you broke me).")
