@@ -107,6 +107,10 @@ def set_exists(set):
 
 
 def get_card(name, set):
+    """
+    Gets a single card of the form card.value and card.key. Trys to get it out
+    of the cache, and if that fails it trys to load the set.
+    """
     cache = IronCache()
     card = None
 
@@ -141,7 +145,7 @@ def get_deckbrew(input_name, input_set=None):
             for item in editions:
                 if item['set'].lower() == input_set.lower():
                     card = get_card(construct_name(fuzzy_name, construct_set(input_set))
-                        return card, fuzzy_name, item['set']
+                    return card, fuzzy_name, item['set']
 
         return get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])), fuzzy_name, editions[0]['set']
 
