@@ -89,15 +89,19 @@ def load_set(set):
             cache="mtgprice",
             key=card['mtgpriceID'],
             value=card['fairPrice'],
-            expires_in=86400,
-            add=True
+            options={
+                'expires_in': 86400,
+                'add': true
+            }
         )
     msg = cache.put(
         cache="mtgprice",
         key=set,
         value=True,
-        expires_in=86400,
-        add=True
+        options={
+            'expires_in': 86400,
+            'add': true
+        }
     )
 
     return msg.msg
@@ -161,12 +165,12 @@ def get_deckbrew(input_name, input_set=None):
         if input_set:
             for item in editions:
                 if item['set'].lower() == input_set.lower():
-                    card = get_card(construct_name(fuzzy_name, construct_set(input_set)))
+                    card = get_card(construct_name(fuzzy_name), construct_set(input_set))
                     set_ret = item['set']
                     name_ret = fuzzy_name
 
         if not card:
-            card = get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])))
+            card = get_card(construct_name(fuzzy_name), construct_set(editions[0]['set']))
             set_ret = editions[0]['set']
             name_ret = fuzzy_name
 
