@@ -84,7 +84,7 @@ def load_set(set):
     data = json.load(urllib2.urlopen(
         'http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set))
     cards_list = data['cards']
-    for card in cards:
+    for card in cards_list:
         cache.put(
             cache="mtgprice",
             key=card['mtgpriceID'],
@@ -153,7 +153,7 @@ def get_deckbrew(input_name, input_set=None):
     set_ret = None
     name_ret = None
 
-    if len(data > 0):
+    if len(data) > 0:
         data = data[0]
         fuzzy_name = data['name']
         editions = data['editions']
@@ -183,7 +183,7 @@ def price(bot, trigger):
         card = None
         options = trigger.group(2).split(' !')
         options = [x.encode('utf-8') for x in options]
-        if len(options) == 2:
+        if len(options) > 1:
             name = construct_name(options[0])
             set = construct_set(options[1])
             card = get_card(name, set)
