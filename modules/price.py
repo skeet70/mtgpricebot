@@ -188,13 +188,12 @@ def price(bot, trigger):
             set = construct_set(options[1])
             card = get_card(name, set)
             if card.value:
-                bot.reply(
-                    options[0].title() + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + options[1].title()
+                bot.reply(options[0].title() + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + options[1].title())
             else:
                 card, fuzzy_name, fuzzy_set = get_deckbrew(options[0], options[1])
                 if card.value:
                     bot.reply(
-                    fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set
+                    fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
                 else:
                     bot.reply("No results.")
 
@@ -202,7 +201,7 @@ def price(bot, trigger):
             card, fuzzy_name, fuzzy_set = get_deckbrew(options[0])
             if card.value:
                 bot.reply(
-                fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set
+                fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
             else:
                 bot.reply("No results.")
 
