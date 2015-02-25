@@ -165,7 +165,7 @@ def get_deckbrew(input_name, input_set=None):
                     set_ret = item['set']
                     name_ret = fuzzy_name
 
-        if !card:
+        if not card:
             card = get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])))
             set_ret = editions[0]['set']
             name_ret = fuzzy_name
