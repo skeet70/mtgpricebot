@@ -85,7 +85,7 @@ def load_set(set):
     data = None
 
     try:
-        json.load(html)
+        data = json.load(html)
     except:
         return html
 
