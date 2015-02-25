@@ -97,7 +97,7 @@ def load_set(set):
             value=card['fairPrice'],
             options={
                 'expires_in': 86400,
-                'add': true
+                'add': True
             }
         )
     msg = cache.put(
@@ -106,7 +106,7 @@ def load_set(set):
         value=True,
         options={
             'expires_in': 86400,
-            'add': true
+            'add': True
         }
     )
 
