@@ -64,7 +64,7 @@ def construct_set(set_input):
     return set_input.title().replace(' ', '_')
 
 
-def construct_id(name, set):
+def construct_id(name_input, set_input):
     """
     Construct the MTGPrice API ID for use with the cache.
     """
