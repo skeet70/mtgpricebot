@@ -98,7 +98,7 @@ def load_set(set):
     msg = cache.put(
         cache="mtgprice",
         key=set,
-        value=True,
+        value="True",
         options={"expires_in": 86400, "add": True}
     )
 
