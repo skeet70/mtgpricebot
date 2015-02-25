@@ -81,8 +81,14 @@ def load_set(set):
     """
     cache = IronCache()
 
-    data = json.load(urllib2.urlopen(
-        'http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set))
+    html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set)
+    data = None
+
+    try:
+        json.load(html)
+    except:
+        return html
+
     cards_list = data['cards']
     for card in cards_list:
         cache.put(
@@ -132,16 +138,19 @@ def get_card(name, set):
     """
     cache = IronCache()
     card = None
+    msg = ""
 
     try:
         card = cache.get(cache="mtgprice", key=construct_id(name, set))
     except:
         card = None
-    if card == None:
+    if not card:
         if set_exists(set):
             return None
         else:
-            load_set(set)
+            msg = load_set(set)
+            if msg != "Stored.":
+                raise Exception(msg)
             card = get_card(name, set)
 
     return card
@@ -213,7 +222,7 @@ def price(bot, trigger):
             bot.reply("No results.")
 
     except Exception as e:
-        print(e)
+        bot.msg("skeet70", e)
         bot.reply("No results (or you broke me).")
 
 
