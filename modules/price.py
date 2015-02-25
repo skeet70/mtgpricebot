@@ -2,6 +2,7 @@ import json
 import urllib2
 import urllib
 import os
+import traceback
 
 import willie
 from iron_cache import *
@@ -218,6 +219,7 @@ def price(bot, trigger):
             bot.reply("No results.")
 
     except Exception as e:
+        traceback.print_exc()
         print(e.args[0])
         bot.reply("No results (or you broke me).")
 
