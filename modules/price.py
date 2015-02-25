@@ -93,6 +93,10 @@ def load_set(set):
 
 
 def set_exists(set):
+    """
+    Checks if the set has been loaded into the cache. This is our way of knowing
+    if a card really exists or if it's just not with us without looping forever.
+    """
     cache = IronCache()
 
     try:
@@ -135,6 +139,8 @@ def get_deckbrew(input_name, input_set=None):
     """
     data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})))
     card = None
+    set_ret = None
+    name_ret = None
 
     if len(data > 0):
         data = data[0]
@@ -144,10 +150,16 @@ def get_deckbrew(input_name, input_set=None):
         if input_set:
             for item in editions:
                 if item['set'].lower() == input_set.lower():
-                    card = get_card(construct_name(fuzzy_name, construct_set(input_set))
-                    return card, fuzzy_name, item['set']
+                    card = get_card(construct_name(fuzzy_name, construct_set(input_set)))
+                    set_ret = item['set']
+                    name_ret = fuzzy_name
 
-        return get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])), fuzzy_name, editions[0]['set']
+        if !card:
+            card = get_card(construct_name(fuzzy_name, construct_set(editions[0]['set'])))
+            set_ret = editions[0]['set']
+            name_ret = fuzzy_name
+
+    return card, name_ret, set_ret
 
 
 @willie.module.commands('price')
