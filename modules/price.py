@@ -114,7 +114,7 @@ def get_card(name, set):
         card = cache.get(cache="mtgprice", key=construct_id(name, set))
     except:
         card = None
-    if card = None:
+    if card == None:
         if set_exists(set):
             return None
         else:
