@@ -102,7 +102,7 @@ def load_set(set):
         options={"expires_in": 86400, "add": True}
     )
 
-    return msg.msg
+    return True
 
 
 def set_exists(set):
@@ -130,7 +130,6 @@ def get_card(name, set):
     """
     cache = IronCache()
     card = None
-    msg = ""
 
     try:
         card = cache.get(cache="mtgprice", key=construct_id(name, set))
@@ -140,8 +139,7 @@ def get_card(name, set):
         if set_exists(set):
             return None
         else:
-            msg = load_set(set)
-            print msg.read()
+            load_set(set)
             card = get_card(name, set)
 
     return card
