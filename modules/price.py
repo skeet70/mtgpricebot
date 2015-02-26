@@ -183,7 +183,7 @@ def load_set(set):
     if set.upper() in set_symbols:
         set = set_symbols[set.upper()]
     print("Calling mtgprice API for set: " + set)
-    html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set)
+    html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s=' + set)
     data = None
 
     print("Loading JSON from MTGPrice for: " + set)
@@ -247,12 +247,12 @@ def get_card(name, set):
         print("Card not found in cache: " + name + " " + set)
         card = None
     if not card:
-        if set_exists(set):
+        if set_exists(construct_set(set)):
             print("Card " + name + " " + set + " doesn't exist, set is cached.")
             return None
         else:
             print("Set " + set + " wasn't found, caching and trying again.")
-            load_set(set)
+            load_set(construct_set(set))
             card = get_card(name, set)
 
     return card
