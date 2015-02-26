@@ -3,6 +3,7 @@ import urllib2
 import urllib
 import os
 import traceback
+import string
 
 import willie
 from iron_cache import *
@@ -145,7 +146,7 @@ def construct_name(name_input):
     Construct a spaceless name for use with MTGPrice's API.
     """
     print("Constructing a name based on " + name_input)
-    return name_input.title().replace(' ', '_')
+    return string.capwords(name_input).replace(' ', '_')
 
 
 def construct_set(set_input):
@@ -157,7 +158,7 @@ def construct_set(set_input):
         print("Found " + set_input + " in set_symbols, passing through.")
         return set_symbols[set_input.upper()]
 
-    return set_input.title().replace(' ', '_')
+    return string.capwords(set_input).replace(' ', '_')
 
 
 def construct_id(name_input, set_input):
@@ -301,7 +302,7 @@ def price(bot, trigger):
             card = get_card(name, set_name)
             if card:
                 print("Found card in cache/MTGPrice, replying.")
-                bot.reply(options[0].title() + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + set_name.replace('_', ' '))
+                bot.reply(string.capwords(options[0]) + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + set_name.replace('_', ' '))
             else:
                 print("Card not found in cache/MTGPrice, trying deckbrew.")
                 card, fuzzy_name, fuzzy_set = get_deckbrew(options[0], options[1])
