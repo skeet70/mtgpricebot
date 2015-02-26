@@ -151,8 +151,8 @@ def construct_set(set_input):
     """
     Construct a spaceless set name for use with MTGPrice's API.
     """
-    if set_input.title() in set_symbols:
-        set_input = set_symbols[set_input.title()]
+    if set_input in set_symbols:
+        return set_symbols[set_input]
 
     return set_input.title().replace(' ', '_')
 
