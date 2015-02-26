@@ -180,6 +180,8 @@ def load_set(set):
     print("Loading set: " + set)
     cache = IronCache()
 
+    if set.upper() in set_symbols:
+        set = set_symbols[set.upper()]
     print("Calling mtgprice API for set: " + set)
     html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set)
     data = None
@@ -216,6 +218,8 @@ def set_exists(set):
     cache = IronCache()
 
     try:
+        if set.upper() in set_symbols:
+            set = set_symbols[set.upper()]
         set_marker = cache.get(cache="mtgprice", key=set)
     except:
         set_marker = None
@@ -328,7 +332,6 @@ def price(bot, trigger):
     except Exception as e:
         traceback.print_exc()
         print("Exception while searching: ")
-        print(e.args[0])
         bot.reply("No results (or you broke me).")
 
 
