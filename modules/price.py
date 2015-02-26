@@ -155,7 +155,7 @@ def construct_set(set_input):
     print("Constructing a set based on " + set_input)
     if set_input.upper() in set_symbols:
         print("Found " + set_input + " in set_symbols, passing through.")
-        return set_symbols[set_input]
+        return set_symbols[set_input.upper()]
 
     return set_input.title().replace(' ', '_')
 
