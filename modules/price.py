@@ -153,7 +153,7 @@ def construct_set(set_input):
     Construct a spaceless set name for use with MTGPrice's API.
     """
     print("Constructing a set based on " + set_input)
-    if set_input.uppercase() in set_symbols:
+    if set_input.upper() in set_symbols:
         print("Found " + set_input + " in set_symbols, passing through.")
         return set_symbols[set_input]
 
