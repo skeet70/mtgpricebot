@@ -297,12 +297,12 @@ def price(bot, trigger):
         options = [x.encode('utf-8') for x in options]
         if len(options) > 1:
             print("Name and set passed in, try getting them directly.")
-            name = construct_name(options[0])
-            set_name = construct_set(options[1])
+            name = options[0]
+            set_name = options[1]
             card = get_card(name, set_name)
             if card:
                 print("Found card in cache/MTGPrice, replying.")
-                bot.reply(string.capwords(options[0]) + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + set_name.replace('_', ' '))
+                bot.reply(string.capwords(options[0]) + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + construct_set(set_name).replace('_', ' '))
             else:
                 print("Card not found in cache/MTGPrice, trying deckbrew.")
                 card, fuzzy_name, fuzzy_set = get_deckbrew(options[0], options[1])
