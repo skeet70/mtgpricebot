@@ -144,6 +144,7 @@ def construct_name(name_input):
     """
     Construct a spaceless name for use with MTGPrice's API.
     """
+    print("Constructing a name based on " + name_input)
     return name_input.title().replace(' ', '_')
 
 
@@ -151,7 +152,9 @@ def construct_set(set_input):
     """
     Construct a spaceless set name for use with MTGPrice's API.
     """
+    print("Constructing a set based on " + set_input)
     if set_input in set_symbols:
+        print("Found " + set_input + " in set_symbols, passing through.")
         return set_symbols[set_input]
 
     return set_input.title().replace(' ', '_')
@@ -164,6 +167,7 @@ def construct_id(name_input, set_input):
     name = construct_name(name_input)
     set = construct_set(set_input)
 
+    print("Constructing an ID from " + name + " and " + set)
     return name + set + "falseNM-M"
 
 
@@ -172,13 +176,17 @@ def load_set(set):
     Loads a set into the cache, only fired if the set_marker isn't already
     there. All cache items expire after a day.
     """
+    print("Loading set: " + set)
     cache = IronCache()
 
+    print("Calling mtgprice API for set: " + set)
     html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s='+set)
     data = None
 
+    print("Loading JSON from MTGPrice for: " + set)
     data = json.load(html)
 
+    print("Caching card list for: " + set)
     cards_list = data['cards']
     for card in cards_list:
         cache.put(
@@ -187,6 +195,7 @@ def load_set(set):
             value=card['fairPrice'],
             options={"expires_in": 86400, "add": True}
         )
+    print("Caching set marker for: " + set)
     msg = cache.put(
         cache="mtgprice",
         key=set,
@@ -202,6 +211,7 @@ def set_exists(set):
     Checks if the set has been loaded into the cache. This is our way of knowing
     if a card really exists or if it's just not with us without looping forever.
     """
+    print("Checking if set " + set + " exists in the cache.")
     cache = IronCache()
 
     try:
@@ -210,8 +220,10 @@ def set_exists(set):
         set_marker = None
 
     if set_marker:
+        print("Found cached set: " + set)
         return True
     else:
+        print("Set not found in cache: " + set)
         return False
 
 
@@ -224,13 +236,17 @@ def get_card(name, set):
     card = None
 
     try:
+        print("Getting card: " + name + " " + set)
         card = cache.get(cache="mtgprice", key=construct_id(name, set))
     except:
+        print("Card not found in cache: " + name + " " + set)
         card = None
     if not card:
         if set_exists(set):
+            print("Card " + name + " " + set + " doesn't exist, set is cached.")
             return None
         else:
+            print("Set " + set + " wasn't found, caching and trying again.")
             load_set(set)
             card = get_card(name, set)
 
@@ -247,6 +263,7 @@ def get_deckbrew(input_name, input_set=None):
     set_ret = None
     name_ret = None
 
+    print("Attempting to get card from deckbrew. ATTN: Broken.")
     if len(data) > 0:
         data = data[0]
         fuzzy_name = data['name']
@@ -278,32 +295,38 @@ def price(bot, trigger):
         options = trigger.group(2).split(' !')
         options = [x.encode('utf-8') for x in options]
         if len(options) > 1:
+            print("Name and set passed in, try getting them directly.")
             name = construct_name(options[0])
             set_name = construct_set(options[1])
             card = get_card(name, set_name)
             if card:
-                bot.reply(options[0].title() + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + options[1].title())
+                print("Found card in cache/MTGPrice, replying.")
+                bot.reply(options[0].title() + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + set_name.replace('_', ' '))
             else:
+                print("Card not found in cache/MTGPrice, trying deckbrew.")
                 card, fuzzy_name, fuzzy_set = get_deckbrew(options[0], options[1])
                 if card:
-                    bot.reply(
-                    fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
+                    bot.reply(fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
                 else:
                     bot.reply("No results.")
 
         elif options[0]:
+            print("Only card name given: " + options[0] + " attempting to fuzzy match set.")
             card, fuzzy_name, fuzzy_set = get_deckbrew(options[0])
             if card:
-                bot.reply(
-                fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
+                print("Successfully matched, replying with card information.")
+                bot.reply(fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
             else:
+                print("Failed to fuzzy find match, replying with no results.")
                 bot.reply("No results.")
 
         else:
+            print("No searching techniques worked, replying with failure.")
             bot.reply("No results.")
 
     except Exception as e:
         traceback.print_exc()
+        print("Exception while searching: ")
         print(e.args[0])
         bot.reply("No results (or you broke me).")
 
