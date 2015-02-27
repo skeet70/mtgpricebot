@@ -188,7 +188,7 @@ def load_set(set_name):
     data = None
 
     print("Loading JSON from MTGPrice for: " + set_name)
-    data = json.load(response.json())
+    data = response.json()
 
     print("Caching card list for: " + set_name)
     cards_list = data['cards']
@@ -264,7 +264,7 @@ def get_deckbrew(input_name, input_set=None):
     To be used when the cache and mtgprice have failed. This should let us do
     some fuzzy name only matches.
     """
-    data = json.load(requests.get('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})).json())
+    data = requests.get('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})).json()
     card = None
     set_ret = None
     name_ret = None
@@ -368,7 +368,7 @@ def formats(bot, trigger):
     try:
         option = trigger.group(2)
         option = option.encode('utf-8')
-        data = json.load(requests.get('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': option})).json())
+        data = requests.get('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': option})).json()
         if len(data) > 0:
             data = data[0]
             name = data['name']
