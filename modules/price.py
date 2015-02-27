@@ -166,30 +166,30 @@ def construct_id(name_input, set_input):
     Construct the MTGPrice API ID for use with the cache.
     """
     name = construct_name(name_input)
-    set = construct_set(set_input)
+    set_name = construct_set(set_input)
 
-    print("Constructing an ID from " + name + " and " + set)
-    return name + set + "falseNM-M"
+    print("Constructing an ID from " + name + " and " + set_name)
+    return name + set_name + "falseNM-M"
 
 
-def load_set(set):
+def load_set(set_name):
     """
     Loads a set into the cache, only fired if the set_marker isn't already
     there. All cache items expire after a day.
     """
-    print("Loading set: " + set)
+    print("Loading set: " + set_name)
     cache = IronCache()
 
-    if set.upper() in set_symbols:
-        set = set_symbols[set.upper()]
-    print("Calling mtgprice API for set: " + set)
-    html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s=' + set)
+    if set_name.upper() in set_symbols:
+        set_name = set_symbols[set.upper()]
+    print("Calling mtgprice API for set: " + set_name)
+    html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s=' + set_name)
     data = None
 
-    print("Loading JSON from MTGPrice for: " + set)
+    print("Loading JSON from MTGPrice for: " + set_name)
     data = json.load(html)
 
-    print("Caching card list for: " + set)
+    print("Caching card list for: " + set_name)
     cards_list = data['cards']
     for card in cards_list:
         cache.put(
@@ -198,10 +198,10 @@ def load_set(set):
             value=card['fairPrice'],
             options={"expires_in": 86400, "add": True}
         )
-    print("Caching set marker for: " + set)
+    print("Caching set marker for: " + set_name)
     msg = cache.put(
         cache="mtgprice",
-        key=set,
+        key=set_name,
         value="True",
         options={"expires_in": 86400, "add": True}
     )
@@ -209,30 +209,30 @@ def load_set(set):
     return True
 
 
-def set_exists(set):
+def set_exists(set_name):
     """
     Checks if the set has been loaded into the cache. This is our way of knowing
     if a card really exists or if it's just not with us without looping forever.
     """
-    print("Checking if set " + set + " exists in the cache.")
+    print("Checking if set " + set_name + " exists in the cache.")
     cache = IronCache()
 
     try:
-        if set.upper() in set_symbols:
-            set = set_symbols[set.upper()]
-        set_marker = cache.get(cache="mtgprice", key=set)
+        if set_name.upper() in set_symbols:
+            set_name = set_symbols[set.upper()]
+        set_marker = cache.get(cache="mtgprice", key=set_name)
     except:
         set_marker = None
 
     if set_marker:
-        print("Found cached set: " + set)
+        print("Found cached set: " + set_name)
         return True
     else:
-        print("Set not found in cache: " + set)
+        print("Set not found in cache: " + set_name)
         return False
 
 
-def get_card(name, set):
+def get_card(name, set_name):
     """
     Gets a single card of the form card.value and card.key. Trys to get it out
     of the cache, and if that fails it trys to load the set.
@@ -241,19 +241,19 @@ def get_card(name, set):
     card = None
 
     try:
-        print("Getting card: " + name + " " + set)
-        card = cache.get(cache="mtgprice", key=construct_id(name, set))
+        print("Getting card: " + name + " " + set_name)
+        card = cache.get(cache="mtgprice", key=construct_id(name, set_name))
     except:
-        print("Card not found in cache: " + name + " " + set)
+        print("Card not found in cache: " + name + " " + set_name)
         card = None
     if not card:
-        if set_exists(construct_set(set)):
-            print("Card " + name + " " + set + " doesn't exist, set is cached.")
+        if set_exists(construct_set(set_name)):
+            print("Card " + name + " " + set_name + " doesn't exist, set is cached.")
             return None
         else:
-            print("Set " + set + " wasn't found, caching and trying again.")
-            load_set(construct_set(set))
-            card = get_card(name, set)
+            print("Set " + set_name + " wasn't found, caching and trying again.")
+            load_set(construct_set(set_name))
+            card = get_card(name, set_name)
 
     return card
 
