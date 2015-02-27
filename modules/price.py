@@ -3,11 +3,12 @@ import urllib2
 import urllib
 import os
 import traceback
-import titlecase
 
 import willie
 from iron_cache import *
 from bs4 import BeautifulSoup
+import titlecase
+import requests
 
 set_symbols = {
     "10E": "10th_Edition",
@@ -183,11 +184,11 @@ def load_set(set_name):
     if set_name.upper() in set_symbols:
         set_name = set_symbols[set.upper()]
     print("Calling mtgprice API for set: " + set_name)
-    html = urllib2.urlopen('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s=' + set_name)
+    response = requests.get('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s=' + set_name)
     data = None
 
     print("Loading JSON from MTGPrice for: " + set_name)
-    data = json.load(html)
+    data = json.load(response.json())
 
     print("Caching card list for: " + set_name)
     cards_list = data['cards']
@@ -263,7 +264,7 @@ def get_deckbrew(input_name, input_set=None):
     To be used when the cache and mtgprice have failed. This should let us do
     some fuzzy name only matches.
     """
-    data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})))
+    data = json.load(requests.get('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})).json())
     card = None
     set_ret = None
     name_ret = None
@@ -367,7 +368,7 @@ def formats(bot, trigger):
     try:
         option = trigger.group(2)
         option = option.encode('utf-8')
-        data = json.load(urllib2.urlopen('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': option})))
+        data = json.load(requests.get('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': option})).json())
         if len(data) > 0:
             data = data[0]
             name = data['name']
