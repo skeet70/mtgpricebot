@@ -60,6 +60,7 @@ set_symbols = {
     "DRB": "From_the_Vault_Dragons",
     "DRK": "The_Dark",
     "DST": "Darksteel",
+    "DTK": "Dragons_of_Tarkir",
     "DVD": "Duel_Decks_Divine_vs_Demonic",
     "EVE": "Eventide",
     "EVG": "Duel_Decks_Elves_vs_Goblins",
