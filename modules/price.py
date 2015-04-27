@@ -183,7 +183,7 @@ def load_set(set_name):
     cache = IronCache()
 
     if set_name.upper() in set_symbols:
-        set_name = set_symbols[set.upper()]
+        set_name = set_symbols[set_name.upper()]
     print("Calling mtgprice API for set: " + set_name)
     response = requests.get('http://www.mtgprice.com/api?apiKey='+os.environ['MTGPRICEAPI']+'&s=' + set_name)
     data = None
@@ -221,7 +221,7 @@ def set_exists(set_name):
 
     try:
         if set_name.upper() in set_symbols:
-            set_name = set_symbols[set.upper()]
+            set_name = set_symbols[set_name.upper()]
         set_marker = cache.get(cache="mtgprice", key=set_name)
     except:
         set_marker = None
