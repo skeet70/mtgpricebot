@@ -30,6 +30,7 @@ set_symbols = {
     "ARN": "Arabian_Nights",
     "ATH": "Anthologies",
     "ATQ": "Antiquities",
+    "AQ": "Antiquities",
     "AVN": "Duel_Decks_Ajani_vs_Nicol_Bolas",
     "AVR": "Avacyn_Restored",
     "BNG": "Born_of_the_Gods",
