@@ -195,12 +195,13 @@ def load_set(set_name):
     print("Caching card list for: " + set_name)
     cards_list = data['cards']
     for card in cards_list:
-        cache.put(
-            cache="mtgprice",
-            key=card['mtgpriceID'],
-            value=card['fairPrice'],
-            options={"expires_in": 86400, "add": True}
-        )
+        if "//" not in card['mtgpriceID']:
+            cache.put(
+                cache="mtgprice",
+                key=card['mtgpriceID'],
+                value=card['fairPrice'],
+                options={"expires_in": 86400, "add": True}
+            )
     print("Caching set marker for: " + set_name)
     msg = cache.put(
         cache="mtgprice",
