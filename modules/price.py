@@ -99,7 +99,7 @@ set_symbols = {
     "M15": "M15",
     "MBS": "Mirrodin_Besieged",
     "MIR": "Mirage",
-    "MM2": "Modern_Masters_2015"
+    "MM2": "Modern_Masters_2015",
     "MMA": "Modern_Masters",
     "MMQ": "Mercadian_Masques",
     "MOR": "Morningtide",
