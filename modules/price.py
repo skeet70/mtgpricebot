@@ -108,6 +108,7 @@ set_symbols = {
     "NPH": "New_Phyrexia",
     "ODY": "Odyssey",
     "ONS": "Onslaught",
+    "ORI": "Magic_Origins",
     "P12": "Planechase_2012",
     "PCY": "Prophecy",
     "PD3": "Premium_Deck_Series_Graveborn",
