@@ -263,37 +263,6 @@ def get_card(name, set_name):
     return card
 
 
-def get_deckbrew(input_name, input_set=None):
-    """
-    To be used when the cache and mtgprice have failed. This should let us do
-    some fuzzy name only matches.
-    """
-    data = requests.get('https://api.deckbrew.com/mtg/cards?'+urllib.urlencode({'name': input_name})).json()
-    card = None
-    set_ret = None
-    name_ret = None
-
-    print("Attempting to get card from deckbrew. ATTN: Broken.")
-    if len(data) > 0:
-        data = data[0]
-        fuzzy_name = data['name']
-        editions = data['editions']
-
-        if input_set:
-            for item in editions:
-                if item['set'].lower() == input_set.lower():
-                    card = get_card(construct_name(fuzzy_name), construct_set(input_set))
-                    set_ret = item['set']
-                    name_ret = fuzzy_name
-
-        if not card:
-            card = get_card(construct_name(fuzzy_name), construct_set(editions[0]['set']))
-            set_ret = editions[0]['set']
-            name_ret = fuzzy_name
-
-    return card, name_ret, set_ret
-
-
 @willie.module.commands('price')
 def price(bot, trigger):
     """
@@ -313,21 +282,7 @@ def price(bot, trigger):
                 print("Found card in cache/MTGPrice, replying.")
                 bot.reply(titlecase.titlecase(options[0]) + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + construct_set(set_name).replace('_', ' '))
             else:
-                print("Card not found in cache/MTGPrice, trying deckbrew.")
-                card, fuzzy_name, fuzzy_set = get_deckbrew(options[0], options[1])
-                if card:
-                    bot.reply(fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
-                else:
-                    bot.reply("No results.")
-
-        elif options[0]:
-            print("Only card name given: " + options[0] + " attempting to fuzzy match set.")
-            card, fuzzy_name, fuzzy_set = get_deckbrew(options[0])
-            if card:
-                print("Successfully matched, replying with card information.")
-                bot.reply(fuzzy_name + ' | MTGPrice.com fair price: ' + card.value + ' | Set: ' + fuzzy_set)
-            else:
-                print("Failed to fuzzy find match, replying with no results.")
+                print("Card not found in cache/MTGPrice.")
                 bot.reply("No results.")
 
         else:
