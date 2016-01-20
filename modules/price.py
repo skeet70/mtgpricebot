@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import titlecase
 import requests
 
-from constants import set_symbols
+from constants.mtgprice_api import set_symbols
 
 def construct_name(name_input):
     """
