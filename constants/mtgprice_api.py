@@ -115,6 +115,7 @@ set_symbols = {
     "RTR": "Return_to_Ravnica",
     "SCG": "Scourge",
     "SHM": "Shadowmoor",
+    "SOI": "Shadows_over_Innistrad",
     "SOK": "Saviors_of_Kamigawa",
     "SOM": "Scars_of_Mirrodin",
     "STH": "Stronghold",
