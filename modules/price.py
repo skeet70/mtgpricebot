@@ -230,7 +230,6 @@ def define(bot, trigger):
         print(e)
         bot.reply("No results (or you broke me).")
 
-
 @willie.module.commands('formats')
 def formats(bot, trigger):
     """
@@ -259,6 +258,21 @@ def formats(bot, trigger):
             bot.reply(output)
         else:
             bot.reply("No results.")
+    except Exception as e:
+        print(e)
+        bot.reply("No results (or you broke me).")
+
+@willie.module.commands('convert')
+def formats(bot, trigger):
+    """
+    Respond to the user with the format information for a given card.
+    """
+    try:
+        amount, currency = trigger.group(2).split(' ')
+        data = requests.get("https://api.fixer.io/latest?base=USD&symbols=" + currency)
+        currency_per_usd = data['rates'][currency]
+
+        bot.reply(str(float(amount) / currency_per_usd) + "USD")
     except Exception as e:
         print(e)
         bot.reply("No results (or you broke me).")
