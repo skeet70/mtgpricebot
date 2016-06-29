@@ -224,7 +224,7 @@ def formats(bot, trigger):
     """
     try:
         amount, currency = trigger.group(2).split(' ')
-        data = requests.get("http://api.fixer.io/latest?base=USD&symbols=" + currency)
+        data = requests.get("http://api.fixer.io/latest?base=USD&symbols=" + currency).json()
         currency_per_usd = data['rates'][currency]
 
         bot.reply(str(float(amount) / currency_per_usd) + "USD")
