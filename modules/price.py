@@ -227,7 +227,7 @@ def formats(bot, trigger):
         data = requests.get("http://api.fixer.io/latest?base=USD&symbols=" + currency).json()
         currency_per_usd = data['rates'][currency]
 
-        bot.reply(round(str(float(amount) / currency_per_usd), 2) + " USD")
+        bot.reply(str(round(float(amount) / currency_per_usd, 2)) + " USD")
     except Exception as e:
         print(e)
         bot.reply("No results (or you broke me).")
