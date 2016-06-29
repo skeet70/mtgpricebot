@@ -220,11 +220,11 @@ def formats(bot, trigger):
 @willie.module.commands('convert')
 def formats(bot, trigger):
     """
-    Respond to the user with the format information for a given card.
+    Respond to the user with their amount of money converted to USD.
     """
     try:
         amount, currency = trigger.group(2).split(' ')
-        data = requests.get("https://api.fixer.io/latest?base=USD&symbols=" + currency)
+        data = requests.get("http://api.fixer.io/latest?base=USD&symbols=" + currency)
         currency_per_usd = data['rates'][currency]
 
         bot.reply(str(float(amount) / currency_per_usd) + "USD")
