@@ -218,7 +218,7 @@ def formats(bot, trigger):
         bot.reply("No results (or you broke me).")
 
 @willie.module.commands('convert')
-def formats(bot, trigger):
+def convert(bot, trigger):
     """
     Respond to the user with their amount of money converted to USD.
     """
